@@ -11,6 +11,13 @@ class UserController extends Controller
 {
     use HasApiTokens;
 
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users
+        );
+    }
+
 
     public function show($id)
     {
@@ -50,4 +57,27 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function updateHasVoted(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'has_voted' => 'required|boolean',
+            ]);
+    
+            $user = User::find($id);
+    
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+    
+            $user->has_voted = $request->input('has_voted');
+            $user->save();
+    
+            return response()->json(['message' => 'User has_voted status updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
 }

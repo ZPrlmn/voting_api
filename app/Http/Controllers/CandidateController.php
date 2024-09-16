@@ -34,5 +34,21 @@ class CandidateController extends Controller
         $candidate->delete();
         return response()->json(null, 204);
     }
+
+    public function incrementVotes($id)
+    {
+        $candidate = Candidate::find($id);
+
+        if ($candidate) {
+            $candidate->votes += 1;
+            $candidate->save();
+            return response()->json([
+                'message' => 'Votes incremented successfully',
+                'candidate' => $candidate
+            ]);
+        }
+
+        return response()->json(['message' => 'Candidate not found'], 404);
+    }
     
 }
